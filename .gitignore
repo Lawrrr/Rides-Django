@@ -1,0 +1,42 @@
+# Byte-compiled / optimized / compiled files
+__pycache__/
+*.pyc
+*.pyd
+*.pyo
+*.egg-info/
+
+# Virtual environment
+venv/
+*.env
+
+# Database
+*.sqlite3
+/db.sqlite3
+
+# Media and Static files (if generated locally)
+/media/
+/static/
+
+# IDE-specific files
+.vscode/
+.idea/
+*.swp
+*.bak
+*~
+
+# Log files
+*.log
+logs/
+
+# Django-specific files
+local_settings.py
+settings_local.py
+settings/local.py # If you use a settings package with a local settings file
+
+# Secret Key (if not loaded from environment variables)
+# It's best practice to load this from environment variables or a separate, untracked file
+# SECRET_KEY=
+
+# Other temporary files
+tmp/
+*.tmp

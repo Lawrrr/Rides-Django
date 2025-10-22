@@ -12,4 +12,4 @@ class Ride(models.Model):
     dropoff_longitude = models.FloatField(max_length=12)
 
     def __str__(self):
-        return self.id_ride + "- " + self.status
+        return f"{self.id_ride} - {self.status}"

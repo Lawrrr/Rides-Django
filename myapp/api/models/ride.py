@@ -2,8 +2,13 @@ from django.db import models
 from .user import User
 
 class Ride(models.Model):
+    STATUS_CHOICES = [
+        ('en-route', 'En-route'),
+        ('pickup', 'Pickup'),
+        ('dropoff', 'Dropoff')
+    ]
     id_ride = models.AutoField(primary_key=True)
-    status = models.CharField(max_length=100, default="en-route")
+    status = models.CharField(max_length=100, choices=STATUS_CHOICES, default="en-route")
     id_rider = models.ForeignKey(User, null=False, on_delete=models.CASCADE, related_name="user_rider")
     id_driver = models.ForeignKey(User, null=False, on_delete=models.CASCADE, related_name="user_driver")
     pickup_latitude = models.FloatField(max_length=12)

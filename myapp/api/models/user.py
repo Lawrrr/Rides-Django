@@ -17,8 +17,12 @@ class UserManager(BaseUserManager):
         return self.create_user(email, password, role='admin', **extra_fields)
 
 class User(AbstractBaseUser, PermissionsMixin):
+    ROLE_CHOICES = [
+        ('rider', 'Rider'),
+        ('driver', 'Driver')
+    ]
     id_user = models.AutoField(primary_key=True)
-    role = models.CharField(max_length=100, default="rider")
+    role = models.CharField(max_length=100, choices=ROLE_CHOICES, default="rider")
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)

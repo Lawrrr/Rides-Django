@@ -1,3 +1,4 @@
+from django.db import connection
 from django.db.models import F, Prefetch, Window
 from django.db.models.functions import RowNumber
 
@@ -17,6 +18,11 @@ from api.helpers import annotate_distance, filter_nearby
 # utils
 from django.utils import timezone
 from datetime import timedelta
+
+
+def dictfetchall(cursor):
+    columns = [col[0] for col in cursor.description]
+    return [dict(zip(columns, row)) for row in cursor.fetchall()]
 
 class RideViewset(viewsets.ModelViewSet):
     queryset = Ride.objects.all()
@@ -110,3 +116,30 @@ class RideViewset(viewsets.ModelViewSet):
         
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    @action(detail=False, methods=['get'])
+    def count_trip_more_than_hour(self, request, *args, **kwargs):
+        count_trip_query = """
+        SELECT 
+            STRFTIME('%Y-%m', ar.pickup_time) AS Month,
+            au.first_name || ' ' || SUBSTR(au.last_name,1,1) AS Driver,
+            COUNT(*) AS 'Count of Trips > 1'
+        FROM api_ride ar
+        JOIN api_user au 
+            ON ar.id_driver_id = au.id_user
+        JOIN api_rideevent rev 
+            ON ar.id_ride  = rev.id_ride_id
+        WHERE ar.status = "dropoff" 
+        AND (julianday(rev.created_at) - julianday(ar.pickup_time)) * 24 * 60 > 60
+        AND (
+            rev.description LIKE '%%dropoff%%'
+        )
+        GROUP BY Month, Driver
+        ORDER BY Month, Driver;
+        """
+
+        with connection.cursor() as cursor:
+            cursor.execute(count_trip_query)
+            data = dictfetchall(cursor)
+
+        return Response(data, status=status.HTTP_200_OK)

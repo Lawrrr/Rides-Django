@@ -117,7 +117,7 @@ More can be found on the postman collection I will be sharing on the email.
 
 ## Postman
 
-- Admin user created for testing and credentials are displayed below.
+- Admin user created for testing and credentials are displayed below..
   ```
     {
        "email": "test@gmail.com",
